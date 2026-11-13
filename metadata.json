@@ -1,0 +1,6 @@
+{
+  "name": "Teach me",
+  "description": "تطبيق كلاسيكي هادئ لتعلم اللغة الإنكليزية من مستوى B1 إلى B2 مع مقالات يومية واختبارات وتصحيح صوتي ولغوي بالذكاء الاصطناعي وتقارير للمعلم وولي الأمر.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

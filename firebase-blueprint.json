@@ -1,0 +1,147 @@
+{
+  "entities": {
+    "LearnerProfile": {
+      "title": "LearnerProfile",
+      "description": "Private learner progress, personalized B1-B2 path, settings, and skill mastery metrics.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Firebase Auth UID of the learner." },
+        "displayName": { "type": "string", "description": "Display name of the learner." },
+        "cefrLevel": { "type": "string", "enum": ["B1", "B1+", "B2"], "description": "Current CEFR proficiency stage." },
+        "learningGoal": { "type": "string", "description": "Personalized learning goal." },
+        "xp": { "type": "integer", "description": "Total experience points earned." },
+        "streakDays": { "type": "integer", "description": "Consecutive daily study streak." },
+        "articlesRead": { "type": "integer", "description": "Total articles completed." },
+        "quizzesCompleted": { "type": "integer", "description": "Total interactive quizzes completed." },
+        "voiceSessionsCount": { "type": "integer", "description": "Total AI speech sessions completed." },
+        "readingScore": { "type": "integer", "description": "Reading mastery score 0-100." },
+        "listeningScore": { "type": "integer", "description": "Listening mastery score 0-100." },
+        "speakingScore": { "type": "integer", "description": "Speaking mastery score 0-100." },
+        "grammarScore": { "type": "integer", "description": "Grammar mastery score 0-100." },
+        "vocabularyScore": { "type": "integer", "description": "Vocabulary mastery score 0-100." },
+        "preferredLang": { "type": "string", "enum": ["ar", "en"], "description": "UI language preference." },
+        "translationLang": { "type": "string", "enum": ["ar", "fr", "es", "tr", "de"], "description": "Helper translation language." },
+        "readingTheme": { "type": "string", "enum": ["WARM_PAPER", "EYE_COMFORT", "CALM_DARK"], "description": "Visual theme mode." },
+        "reminderEnabled": { "type": "boolean", "description": "Smart reminder enabled flag." },
+        "reminderHour": { "type": "integer", "description": "Preferred daily reminder hour." },
+        "reminderMinute": { "type": "integer", "description": "Preferred daily reminder minute." },
+        "guardianPin": { "type": "string", "description": "Optional PIN for parent/teacher portal." },
+        "earnedBadges": { "type": "array", "description": "List of earned badge identifiers (max 30)." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server creation timestamp." },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Server update timestamp." }
+      },
+      "required": [
+        "userId", "displayName", "cefrLevel", "learningGoal", "xp", "streakDays",
+        "articlesRead", "quizzesCompleted", "voiceSessionsCount",
+        "readingScore", "listeningScore", "speakingScore", "grammarScore", "vocabularyScore",
+        "preferredLang", "translationLang", "readingTheme", "reminderEnabled",
+        "reminderHour", "reminderMinute", "earnedBadges", "createdAt", "updatedAt"
+      ]
+    },
+    "MistakeRecord": {
+      "title": "MistakeRecord",
+      "description": "Logged language or pronunciation mistake with red (critical) or orange (minor) classification.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Owner UID." },
+        "sourceType": { "type": "string", "enum": ["VOICE", "QUIZ", "WRITING"], "description": "Origin module." },
+        "originalText": { "type": "string", "description": "Learner's original phrase or sentence." },
+        "correctedText": { "type": "string", "description": "Corrected English phrase." },
+        "errorSpan": { "type": "string", "description": "Specific word or letter span that had the error." },
+        "severity": { "type": "string", "enum": ["RED_CRITICAL", "ORANGE_MINOR"], "description": "Red for meaning-changing error, orange for minor non-meaning error." },
+        "category": { "type": "string", "enum": ["PRONUNCIATION", "GRAMMAR", "SPELLING", "WORD_CHOICE"], "description": "Error domain." },
+        "explanationAr": { "type": "string", "description": "Arabic pedagogical explanation." },
+        "explanationEn": { "type": "string", "description": "English pedagogical explanation." },
+        "mastered": { "type": "boolean", "description": "Whether learner mastered this mistake during review." },
+        "reviewCount": { "type": "integer", "description": "Number of times reviewed." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server timestamp." },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Server timestamp." }
+      },
+      "required": [
+        "userId", "sourceType", "originalText", "correctedText", "errorSpan",
+        "severity", "category", "explanationAr", "explanationEn", "mastered",
+        "reviewCount", "createdAt", "updatedAt"
+      ]
+    },
+    "AssessmentLog": {
+      "title": "AssessmentLog",
+      "description": "Continuous linguistic assessment and activity entry for periodic reports.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "activityType": { "type": "string", "enum": ["ARTICLE", "QUIZ", "VOICE", "PLACEMENT", "CHALLENGE"] },
+        "title": { "type": "string" },
+        "score": { "type": "integer" },
+        "xpEarned": { "type": "integer" },
+        "redErrors": { "type": "integer" },
+        "orangeErrors": { "type": "integer" },
+        "cefrSnapshot": { "type": "string", "enum": ["B1", "B1+", "B2"] },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "userId", "activityType", "title", "score", "xpEarned",
+        "redErrors", "orangeErrors", "cefrSnapshot", "createdAt"
+      ]
+    },
+    "WeeklyChallenge": {
+      "title": "WeeklyChallenge",
+      "description": "Gamified weekly interactive challenge tracking.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "weekKey": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "targetCount": { "type": "integer" },
+        "currentCount": { "type": "integer" },
+        "xpReward": { "type": "integer" },
+        "completed": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "userId", "weekKey", "title", "description", "targetCount",
+        "currentCount", "xpReward", "completed", "createdAt", "updatedAt"
+      ]
+    },
+    "LeaderboardEntry": {
+      "title": "LeaderboardEntry",
+      "description": "Public non-PII gamified leaderboard entry.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "displayName": { "type": "string" },
+        "cefrLevel": { "type": "string", "enum": ["B1", "B1+", "B2"] },
+        "xp": { "type": "integer" },
+        "weeklyPoints": { "type": "integer" },
+        "streakDays": { "type": "integer" },
+        "badgeTitle": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "displayName", "cefrLevel", "xp", "weeklyPoints", "streakDays", "badgeTitle", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/LearnerProfile" },
+      "description": "Owner-isolated learner profile and personalized path metrics."
+    },
+    "/users/{userId}/mistakes/{mistakeId}": {
+      "schema": { "$ref": "#/entities/MistakeRecord" },
+      "description": "Owner-isolated mistake history bank (Red critical vs Orange minor)."
+    },
+    "/users/{userId}/assessments/{assessmentId}": {
+      "schema": { "$ref": "#/entities/AssessmentLog" },
+      "description": "Owner-isolated continuous assessment history for periodic reports."
+    },
+    "/users/{userId}/challenges/{challengeId}": {
+      "schema": { "$ref": "#/entities/WeeklyChallenge" },
+      "description": "Owner-isolated weekly interactive challenge progress."
+    },
+    "/leaderboard/{userId}": {
+      "schema": { "$ref": "#/entities/LeaderboardEntry" },
+      "description": "Non-PII public leaderboard readable by signed-in learners, writable only by owner."
+    }
+  }
+}
