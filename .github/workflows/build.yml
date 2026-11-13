@@ -1,4 +1,5 @@
-name: Build Android APK
+
+ name: Build Android APK
 
 on:
   workflow_dispatch:
@@ -17,6 +18,16 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+
+      - name: Generate Debug Keystore
+        run: |
+          STORE_PASS=$(grep -E 'storePassword\s*=' app/build.gradle.kts | head -n1 | sed -nE 's/.*["'\'']([^"'\'']+)["'\''].*/\1/p')
+          KEY_ALIAS=$(grep -E 'keyAlias\s*=' app/build.gradle.kts | head -n1 | sed -nE 's/.*["'\'']([^"'\'']+)["'\''].*/\1/p')
+          KEY_PASS=$(grep -E 'keyPassword\s*=' app/build.gradle.kts | head -n1 | sed -nE 's/.*["'\'']([^"'\'']+)["'\''].*/\1/p')
+          STORE_PASS=${STORE_PASS:-android}
+          KEY_ALIAS=${KEY_ALIAS:-androiddebugkey}
+          KEY_PASS=${KEY_PASS:-android}
+          keytool -genkey -v -keystore debug.keystore -storepass "$STORE_PASS" -alias "$KEY_ALIAS" -keypass "$KEY_PASS" -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
