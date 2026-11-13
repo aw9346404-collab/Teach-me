@@ -1,5 +1,4 @@
-
- name: Build Android APK
+name: Build Android APK
 
 on:
   workflow_dispatch:
@@ -19,15 +18,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Generate Debug Keystore
+      - name: Create Debug Keystore
         run: |
-          STORE_PASS=$(grep -E 'storePassword\s*=' app/build.gradle.kts | head -n1 | sed -nE 's/.*["'\'']([^"'\'']+)["'\''].*/\1/p')
-          KEY_ALIAS=$(grep -E 'keyAlias\s*=' app/build.gradle.kts | head -n1 | sed -nE 's/.*["'\'']([^"'\'']+)["'\''].*/\1/p')
-          KEY_PASS=$(grep -E 'keyPassword\s*=' app/build.gradle.kts | head -n1 | sed -nE 's/.*["'\'']([^"'\'']+)["'\''].*/\1/p')
-          STORE_PASS=${STORE_PASS:-android}
-          KEY_ALIAS=${KEY_ALIAS:-androiddebugkey}
-          KEY_PASS=${KEY_PASS:-android}
-          keytool -genkey -v -keystore debug.keystore -storepass "$STORE_PASS" -alias "$KEY_ALIAS" -keypass "$KEY_PASS" -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+          python3 -c 'import re, subprocess; txt = open("app/build.gradle.kts").read(); sp = (re.findall(r"storePassword\s*=\s*[\"\x27]([^\"\x27]+)", txt) or ["android"])[0]; ka = (re.findall(r"keyAlias\s*=\s*[\"\x27]([^\"\x27]+)", txt) or ["androiddebugkey"])[0]; kp = (re.findall(r"keyPassword\s*=\s*[\"\x27]([^\"\x27]+)", txt) or ["android"])[0]; subprocess.run(["keytool", "-genkey", "-v", "-keystore", "debug.keystore", "-storepass", sp, "-alias", ka, "-keypass", kp, "-keyalg", "RSA", "-keysize", "2048", "-validity", "10000", "-dname", "CN=Android Debug,O=Android,C=US"], check=True)'
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
